@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- WARNING: Eclipse auto-generated file.
+              Any modifications will be overwritten.
+              To include a user specific buildfile here, simply create one in the same
+              directory with the processing instruction <?eclipse.ant.import?>
+              as the first entry and export the buildfile again. -->
+<project basedir="." default="makejar" name="BatchUpdateGrade">
+	<echo message="=================================================="/>
+	<echo message="BatchUpdateGrade make System"/>
+	<echo message="written by n.nishino 2018.02.16"/>
+	<echo message="=================================================="/>
+    <property environment="env"/>
+    <property name="lib.dir" value="./lib"/>
+    <property name="jar.dir" value="./jar"/>
+    <property name="classes.dir" value="./classes"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="WebContent" value="WebContent"/>
+    <property name="target" value="1.8"/>
+    <property name="source" value="1.8"/>
+    <path id="AsoLearning.classpath">
+        <pathelement location="${TOMCAT_HOME}/lib/servlet-api.jar"/>
+        <pathelement location="${TOMCAT_HOME}/lib/jasper.jar"/>
+        <pathelement location="${TOMCAT_HOME}/lib/jsp-api.jar"/>
+        <pathelement location="${TOMCAT_HOME}/lib/el-api.jar"/>
+        <pathelement location="${TOMCAT_HOME}/lib/annotations-api.jar"/>
+        <pathelement location="WEB-INF/classes"/>
+        <pathelement location="work"/>
+    </path>
+  	<path id="build.lib">
+  	   <fileset dir="${lib.dir}" includes="*.jar" />
+  	</path>
+
+
+    <target name="clean">
+        <delete dir="${jar.dir}"/>
+        <delete dir="${classes.dir}"/>
+    </target>
+    <target depends="clean" name="build">
+        <mkdir dir="${jar.dir}"/>
+        <mkdir dir="${classes.dir}"/>
+    </target>
+	<target name="makejar" depends="build">
+		<taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask"
+		          classpath="jarjar-1.4.jar"/>
+
+    	<javac encoding="utf-8" debug="true" debuglevel="${debuglevel}" destdir="${classes.dir}" includeantruntime="false" source="${source}" target="${target}">
+            <src path="src"/>
+            <classpath refid="build.lib"/>
+        </javac>
+    	<copy todir="${classes.dir}">
+   		 	 <fileset dir="src/setting_linux/" includes="app.properties"/>
+  		 	 <fileset dir="src/setting_linux/" includes="logback.xml"/>
+    	</copy>
+    	<copy todir="${classes.dir}/lib">
+   		 	 <fileset dir="${lib.dir}" includes="*.jar"/>
+    	</copy>
+		<jarjar jarfile="${jar.dir}/BatchUpdateGrade.jar" basedir="${classes.dir}" >
+			<manifest>
+		        <attribute name="Main-Class" value="jp.ac.asojuku.batch.updategrade.BatchUpdateGrade"/>
+				<attribute name="Class-Path" value="slf4j-api-1.7.12.jar" />
+	    	</manifest>
+			<zipfileset dir="${lib.dir}" />
+		</jarjar>
+
+	</target>
+</project>
