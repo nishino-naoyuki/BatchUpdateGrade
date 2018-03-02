@@ -4,6 +4,9 @@ import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import jp.ac.asojuku.batch.updategrade.dao.UserDao;
 import jp.ac.asojuku.batch.updategrade.entity.UserTblEntity;
 
@@ -15,6 +18,8 @@ import jp.ac.asojuku.batch.updategrade.entity.UserTblEntity;
  */
 public class BatchUpdateGrade {
 	private static final int LISTNUM = 1000;
+
+	Logger logger = LoggerFactory.getLogger(BatchUpdateGrade.class);
 
 	public static void main(String[] args) {
 		BatchUpdateGrade obj = new BatchUpdateGrade();
@@ -31,6 +36,7 @@ public class BatchUpdateGrade {
 		//ユーザー情報を取得する
 		UserDao dao = null;
 		try{
+			logger.info("BatchUpdateGrade -start-");
 			dao = new UserDao();
 			//接続
 			dao.connect();
@@ -55,9 +61,11 @@ public class BatchUpdateGrade {
 
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.info("BatchUpdateGrade:"+e.getStackTrace());
 			if(dao != null) dao.rollback();
 		} finally{
 			if(dao != null) dao.close();
+			logger.info("BatchUpdateGrade -end-");
 		}
 
 	}
